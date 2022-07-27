@@ -29,11 +29,15 @@ public class Money implements Expression {
         return currency;
     }
 
+    public Money reduce(String to) {
+        return this;
+    }
+
     public Money times(int multiplier) {
         return new Money(amount * multiplier, currency);
     }
 
     public Expression plus(Money addend) {
-        return new Money(this.amount + addend.amount, currency);
+        return new Sum(this, addend);
     }
 }
