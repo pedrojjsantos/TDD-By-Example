@@ -25,6 +25,11 @@ public class MoneyTest {
     }
 
     @Test
+    public void testDifferentClassEquality() {
+        assertEquals(new Money(5, "CHF"), new Franc(5, "CHF"));
+    }
+
+    @Test
     public void testFrancMultiplication() {
         Money five = Money.franc(5);
 
