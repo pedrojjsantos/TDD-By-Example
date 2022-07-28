@@ -1,8 +1,16 @@
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class MoneyTest {
+    private Bank bank;
+
+    @Before
+    public void setUp() {
+        bank = new Bank();
+    }
+
     @Test
     public void testDollarMultiplication() {
         Money five = Money.dollar(5);
@@ -31,7 +39,6 @@ public class MoneyTest {
     public void testSimpleAddition() {
         Money five = Money.dollar(5);
         Expression sum = five.plus(five);
-        Bank bank = new Bank();
         Money reduced = bank.reduce(sum, "USD");
         assertEquals(Money.dollar(10), reduced);
     }
@@ -48,22 +55,18 @@ public class MoneyTest {
     @Test
     public void testReduceSum() {
         Expression sum = new Sum(Money.dollar(3), Money.dollar(4));
-        Bank bank = new Bank();
         Money result = bank.reduce(sum, "USD");
         assertEquals(Money.dollar(7), result);
     }
 
     @Test
     public void testReduceMoney() {
-        Bank bank = new Bank();
         Money result = bank.reduce(Money.dollar(1), "USD");
-
         assertEquals(Money.dollar(1), result);
     }
 
     @Test
     public void testReduceMoneyWithDifferentCurrency() {
-        Bank bank = new Bank();
         bank.addRate("CHF", "USD", 2);
         Money result = bank.reduce(Money.franc(2), "USD");
         assertEquals(Money.dollar(1), result);
@@ -71,6 +74,6 @@ public class MoneyTest {
 
     @Test
     public void testIdentityRate() {
-        assertEquals(1, new Bank().rate("USD", "USD"));
+        assertEquals(1, bank.rate("USD", "USD"));
     }
 }
