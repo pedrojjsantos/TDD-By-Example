@@ -1,3 +1,5 @@
+package money;
+
 public class Money implements Expression {
     protected String currency;
     protected int amount;

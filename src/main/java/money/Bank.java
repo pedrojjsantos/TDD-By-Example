@@ -1,3 +1,5 @@
+package money;
+
 import java.util.HashMap;
 import java.util.Map;
 

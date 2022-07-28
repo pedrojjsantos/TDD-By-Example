@@ -1,3 +1,9 @@
+package money;
+
+import money.Bank;
+import money.Expression;
+import money.Money;
+import money.Sum;
 import org.junit.Before;
 import org.junit.Test;
 
