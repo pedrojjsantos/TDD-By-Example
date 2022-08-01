@@ -1,29 +1,17 @@
 package testing;
 
 public class TestCaseTest extends TestCase {
-    WasRun test;
-
     TestCaseTest(String name) {
         super(name);
     }
 
-    @Override
-    public void setUp() {
-        test = new WasRun("testMethod");
-    }
-
-    public void testRunning() throws Exception {
+    public void testTemplateMethod() throws Exception {
+        WasRun test = new WasRun("testMethod");
         test.run();
-        assert test.wasRun: "test failed";
-    }
-
-    public void testSetUp() throws Exception {
-        test.run();
-        assert test.wasSetUp;
+        assert test.log.equals("setUp testMethod tearDown ");
     }
 
     public static void main(String[] args) throws Exception {
-        new TestCaseTest("testRunning").run();
-        new TestCaseTest("testSetUp").run();
+        new TestCaseTest("testTemplateMethod").run();
     }
 }

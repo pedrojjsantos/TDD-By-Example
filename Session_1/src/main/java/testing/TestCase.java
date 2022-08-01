@@ -8,11 +8,13 @@ public class TestCase {
     }
 
     public void setUp() {}
+    public void tearDown() {}
 
     public void run() throws Exception {
         Class<?> klass = this.getClass();
 
-        klass.getMethod("setUp").invoke(this);
-        klass.getMethod(name).invoke(this); // exec "self" + self.name ...
+        this.setUp();
+        klass.getMethod(name).invoke(this);
+        this.tearDown();
     }
 }
