@@ -1,9 +1,11 @@
 package testing;
 
-public class WasRun {
-    int numberOfTestsRan = 0;
+public class WasRun extends TestCase {
+    int numberOfTestsRan = 0; //self.wasRun = None
 
-    WasRun(String methodName) {}
+    WasRun(String methodName) {
+        super(methodName);
+    }
 
     public void testMethod() {
         numberOfTestsRan = 1;
