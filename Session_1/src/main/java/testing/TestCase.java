@@ -7,7 +7,12 @@ public class TestCase {
         this.name = name;
     }
 
+    public void setUp() {}
+
     public void run() throws Exception {
-        this.getClass().getMethod(name).invoke(this); // exec "self" + self.name ...
+        Class<?> klass = this.getClass();
+
+        klass.getMethod("setUp").invoke(this);
+        klass.getMethod(name).invoke(this); // exec "self" + self.name ...
     }
 }
