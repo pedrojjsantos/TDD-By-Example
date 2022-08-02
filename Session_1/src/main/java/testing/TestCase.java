@@ -10,11 +10,16 @@ public class TestCase {
     public void setUp() {}
     public void tearDown() {}
 
-    public void run() throws Exception {
+    public TestResult run() throws Exception {
         Class<?> klass = this.getClass();
+
+        TestResult result = new TestResult();
+        result.testStarted();
 
         this.setUp();
         klass.getMethod(name).invoke(this);
         this.tearDown();
+
+        return result;
     }
 }
