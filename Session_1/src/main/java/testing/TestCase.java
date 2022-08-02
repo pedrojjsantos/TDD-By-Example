@@ -3,7 +3,7 @@ package testing;
 public class TestCase {
     String methodName;
 
-    TestCase(String methodName) {
+    protected TestCase(String methodName) {
         this.methodName = methodName;
     }
 

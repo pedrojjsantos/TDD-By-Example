@@ -45,15 +45,15 @@ public class TestCaseTest extends TestCase {
         assert "2 run, 1 failed".equals(result.summary()) : result.summary();
     }
 
+    public void testCreateSuiteFromClass() throws Exception {
+        TestSuite suite = new TestSuite(WasRun.class);
+        suite.run(result);
+        assert "2 run, 1 failed".equals(result.summary()) : result.summary();
+    }
+
     public static void main(String[] args) throws Exception {
         TestResult result = new TestResult();
-        TestSuite suite = new TestSuite();
-
-        suite.add(new TestCaseTest("testTemplateMethod"));
-        suite.add(new TestCaseTest("testResult"));
-        suite.add(new TestCaseTest("testFailedResult"));
-        suite.add(new TestCaseTest("testFailedResultFormatting"));
-        suite.add(new TestCaseTest("testSuite"));
+        TestSuite suite = new TestSuite(TestCaseTest.class);
 
         suite.run(result);
         System.out.println(result.summary());
