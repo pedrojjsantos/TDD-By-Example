@@ -10,6 +10,9 @@ public class WasRun extends TestCase {
     public void testMethod() {
         log += "testMethod ";
     }
+    public void testBrokenMethod() {
+        throw new RuntimeException();
+    }
 
     public void setUp() {
         log += "setUp ";

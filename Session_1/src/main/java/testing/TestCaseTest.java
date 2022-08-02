@@ -17,8 +17,23 @@ public class TestCaseTest extends TestCase {
         assert "1 run, 0 failed".equals(result.summary()) : result.summary();
     }
 
+    public void testFailedResult() throws Exception {
+        WasRun test = new WasRun("testBrokenMethod");
+        TestResult result = test.run();
+        assert "1 run, 1 failed".equals(result.summary()) : result.summary();
+    }
+
+    public void testFailedResultFormatting() throws Exception {
+        TestResult result = new TestResult();
+        result.testStarted();
+        result.testFailed();
+        assert "1 run, 1 failed".equals(result.summary()) : result.summary();
+    }
+
     public static void main(String[] args) throws Exception {
         new TestCaseTest("testTemplateMethod").run();
         new TestCaseTest("testResult").run();
+        new TestCaseTest("testFailedResult").run();
+        new TestCaseTest("testFailedResultFormatting").run();
     }
 }

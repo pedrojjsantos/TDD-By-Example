@@ -17,7 +17,8 @@ public class TestCase {
         result.testStarted();
 
         this.setUp();
-        klass.getMethod(name).invoke(this);
+        try {   klass.getMethod(name).invoke(this); }
+        catch (Throwable th) {  result.testFailed(); }
         this.tearDown();
 
         return result;
