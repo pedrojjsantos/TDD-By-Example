@@ -10,17 +10,14 @@ public class TestCase {
     public void setUp() {}
     public void tearDown() {}
 
-    public TestResult run() throws Exception {
+    public void run(TestResult result) throws Exception {
         Class<?> klass = this.getClass();
-
-        TestResult result = new TestResult();
         result.testStarted();
-
         this.setUp();
-        try {   klass.getMethod(name).invoke(this); }
-        catch (Throwable th) {  result.testFailed(); }
-        this.tearDown();
 
-        return result;
+        try {   klass.getMethod(name).invoke(this); }
+        catch (Exception th) {  result.testFailed(); }
+
+        this.tearDown();
     }
 }
