@@ -1,10 +1,10 @@
 package testing;
 
 public class TestCase {
-    String name;
+    String methodName;
 
-    TestCase(String name) {
-        this.name = name;
+    TestCase(String methodName) {
+        this.methodName = methodName;
     }
 
     public void setUp() {}
@@ -15,7 +15,7 @@ public class TestCase {
         result.testStarted();
         this.setUp();
 
-        try {   klass.getMethod(name).invoke(this); }
+        try {   klass.getMethod(methodName).invoke(this); }
         catch (Exception th) {  result.testFailed(); }
 
         this.tearDown();
