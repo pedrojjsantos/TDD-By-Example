@@ -1,5 +1,7 @@
 package testing;
 
+import java.util.List;
+
 public class TestCaseTest extends TestCase {
     TestResult result;
 
@@ -32,7 +34,7 @@ public class TestCaseTest extends TestCase {
 
     public void testFailedResultFormatting() throws Exception {
         result.testStarted();
-        result.testFailed();
+        result.testFailed("", null);
         assert "1 run, 1 failed".equals(result.summary()) : result.summary();
     }
 
@@ -48,7 +50,31 @@ public class TestCaseTest extends TestCase {
     public void testCreateSuiteFromClass() throws Exception {
         TestSuite suite = new TestSuite(WasRun.class);
         suite.run(result);
-        assert "2 run, 1 failed".equals(result.summary()) : result.summary();
+        assert "3 run, 2 failed".equals(result.summary()) : result.summary();
+    }
+
+    public void testResultListFailedTests() throws Exception {
+        TestSuite suite = new TestSuite(WasRun.class);
+        suite.run(result);
+
+        List<TestResult.Fail> failedTests = result.listFailedTests();
+
+        assert failedTests.size() == 2;
+        assert failedTests.get(0).getName().equals("testBrokenMethod");
+        assert failedTests.get(1).getName().equals("testAnotherBrokenMethod");
+    }
+
+    public void testResultFailedTestDescription() throws Exception {
+        TestSuite suite = new TestSuite(WasRun.class);
+        suite.run(result);
+
+        String description = result.description();
+        List<String> lines = description.lines().toList();
+
+        assert lines.size() == 2;
+        assert lines.get(0).equals("testBrokenMethod: AssertionError: \"asserting false\"");
+        assert lines.get(1).equals("testAnotherBrokenMethod: NullPointerException");
+
     }
 
     public static void main(String[] args) throws Exception {
@@ -57,5 +83,7 @@ public class TestCaseTest extends TestCase {
 
         suite.run(result);
         System.out.println(result.summary());
+        System.out.print(result.description());
+
     }
 }

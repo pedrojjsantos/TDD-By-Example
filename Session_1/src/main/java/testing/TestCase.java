@@ -1,5 +1,7 @@
 package testing;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class TestCase {
     String methodName;
 
@@ -16,7 +18,9 @@ public class TestCase {
         this.setUp();
 
         try {   klass.getMethod(methodName).invoke(this); }
-        catch (Exception th) {  result.testFailed(); }
+        catch (InvocationTargetException e) {
+            result.testFailed(methodName, e.getCause());
+        }
 
         this.tearDown();
     }

@@ -11,7 +11,10 @@ public class WasRun extends TestCase {
         log += "testMethod ";
     }
     public void testBrokenMethod() {
-        throw new RuntimeException();
+        assert false : "asserting false";
+    }
+    public void testAnotherBrokenMethod() {
+        throw new NullPointerException();
     }
 
     public void setUp() {
