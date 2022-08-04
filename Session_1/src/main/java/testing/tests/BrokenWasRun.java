@@ -1,4 +1,4 @@
-package testing;
+package testing.tests;
 
 public class BrokenWasRun extends WasRun {
     BrokenWasRun(String methodName) {

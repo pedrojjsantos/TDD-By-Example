@@ -44,7 +44,7 @@ public class TestResult {
         failedSetUp = new Fail("setUp", error);
     }
 
-    static class Fail {
+    public static class Fail {
         String name;
         Throwable error;
 

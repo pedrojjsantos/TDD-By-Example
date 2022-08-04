@@ -1,4 +1,6 @@
-package testing;
+package testing.tests;
+
+import testing.*;
 
 import java.util.List;
 
@@ -95,15 +97,5 @@ public class TestCaseTest extends TestCase {
 
         assert test.log.equals("setUp tearDown ") : test.log;
         assert result.summary().equals("setUp method failed!") : result.summary();
-    }
-
-    public static void main(String[] args) throws Exception {
-        TestResult result = new TestResult();
-        TestSuite suite = new TestSuite(TestCaseTest.class);
-
-        suite.run(result);
-        System.out.println(result.summary());
-        System.out.print(result.description());
-
     }
 }

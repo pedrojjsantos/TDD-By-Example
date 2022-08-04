@@ -1,4 +1,6 @@
-package testing;
+package testing.tests;
+
+import testing.TestCase;
 
 public class WasRun extends TestCase {
     String log = "";
