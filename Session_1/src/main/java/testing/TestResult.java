@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TestResult {
     static final String ERROR_DESCRIPTION_HEADER = "%s: %s%n";
+    Fail failedSetUp = null;
     List<Fail> failedTests = new ArrayList<>();
     int runCount = 0;
 
@@ -17,6 +18,7 @@ public class TestResult {
     }
 
     public String summary() {
+        if (failedSetUp != null) return "setUp method failed!";
         return "%d run, %d failed".formatted(runCount, failedTests.size());
     }
 
@@ -26,13 +28,20 @@ public class TestResult {
 
     public String description() {
         StringBuilder builder = new StringBuilder();
-        for (Fail test : failedTests) {
-            String name = test.getName();
-            String msg = test.getErrorMsg();
+        if (failedSetUp != null)
+            builder.append(failedSetUp.getErrorMsg());
+        else
+            for (Fail test : failedTests) {
+                String name = test.getName();
+                String msg = test.getErrorMsg();
 
-            builder.append(ERROR_DESCRIPTION_HEADER.formatted(name, msg));
-        }
+                builder.append(ERROR_DESCRIPTION_HEADER.formatted(name, msg));
+            }
         return builder.toString();
+    }
+
+    public void setUpFailed(Throwable error) {
+        failedSetUp = new Fail("setUp", error);
     }
 
     static class Fail {
@@ -49,6 +58,7 @@ public class TestResult {
         }
 
         public String getErrorMsg() {
+            if (error == null) return "";
             String errorClass = error.getClass().getSimpleName();
             if (error.getMessage() == null)
                 return errorClass;

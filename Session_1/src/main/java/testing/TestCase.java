@@ -14,8 +14,15 @@ public class TestCase {
 
     public void run(TestResult result) throws Exception {
         Class<?> klass = this.getClass();
+        try {
+            this.setUp();
+        } catch (Exception e) {
+            result.setUpFailed(e);
+            this.tearDown();
+            return;
+        }
+
         result.testStarted();
-        this.setUp();
 
         try {   klass.getMethod(methodName).invoke(this); }
         catch (InvocationTargetException e) {

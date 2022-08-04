@@ -81,7 +81,20 @@ public class TestCaseTest extends TestCase {
         assert lines.size() == 2;
         assert lines.get(0).equals("testBrokenMethod: AssertionError: \"asserting false\"");
         assert lines.get(1).equals("testAnotherBrokenMethod: NullPointerException");
+    }
 
+    public void testResultBrokenSetUp() {
+        result.setUpFailed(new NullPointerException("Ops"));
+        assert result.summary().equals("setUp method failed!") : result.summary();
+        assert result.description().equals("NullPointerException: \"Ops\"") : result.description();
+    }
+
+    public void testBrokenSetUp() throws Exception {
+        BrokenWasRun test = new BrokenWasRun("testMethod");
+        test.run(result);
+
+        assert test.log.equals("setUp tearDown ") : test.log;
+        assert result.summary().equals("setUp method failed!") : result.summary();
     }
 
     public static void main(String[] args) throws Exception {
