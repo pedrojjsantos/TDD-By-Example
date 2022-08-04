@@ -1,15 +1,21 @@
 package testing.tests;
 
+import testing.TestCase;
 import testing.TestResult;
 import testing.TestSuite;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        runTestClass(TestCaseTest.class);
+    }
+
+    private static void runTestClass(Class<? extends TestCase> testClass) throws Exception {
         TestResult result = new TestResult();
-        TestSuite suite = new TestSuite(TestCaseTest.class);
+        TestSuite suite = new TestSuite(testClass);
 
         suite.run(result);
-        System.out.println(result.summary());
-        System.out.print(result.description());
+
+        System.out.printf("%s: %s%n%s%n",
+                testClass.getSimpleName(), result.summary(), result.description());
     }
 }
