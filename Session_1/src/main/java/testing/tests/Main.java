@@ -7,6 +7,7 @@ import testing.TestSuite;
 public class Main {
     public static void main(String[] args) throws Exception {
         runTestClass(TestCaseTest.class);
+        runTestClass(TestResultTest.class);
     }
 
     private static void runTestClass(Class<? extends TestCase> testClass) throws Exception {
