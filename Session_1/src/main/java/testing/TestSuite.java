@@ -8,19 +8,25 @@ import java.util.List;
 
 public class TestSuite {
     List<TestCase> tests = new ArrayList<>();
-    Class<? extends TestCase> testClass = null;
 
     public TestSuite() {}
 
+    private boolean isTestName(String name) {
+        return name.startsWith("test");
+    }
+
     public TestSuite(Class<? extends TestCase> testClass) throws Exception {
-        this.testClass = testClass;
-        List<TestCase> testCases = Arrays.stream(testClass.getMethods())
+        List<String> testNames = Arrays.stream(testClass.getMethods())
                 .map(Method::getName)
-                .filter(this::isTest)
-                .map(this::toTestCase)
+                .filter(this::isTestName)
                 .toList();
 
-        tests.addAll(testCases);
+        Constructor<? extends TestCase> testConstructor =
+                testClass.getDeclaredConstructor(String.class);
+        testConstructor.setAccessible(true);
+
+        for (String name : testNames)
+            tests.add(testConstructor.newInstance(name));
     }
 
     public void add(TestCase test) {
@@ -30,20 +36,5 @@ public class TestSuite {
     public void run(TestResult result) throws Exception {
         for (TestCase test : tests)
             test.run(result);
-    }
-
-    private boolean isTest(String name) {
-        return name.startsWith("test");
-    }
-
-    private TestCase toTestCase(String name) {
-        try {
-            Constructor<? extends TestCase> testConstructor = testClass.getDeclaredConstructor(String.class);
-            testConstructor.setAccessible(true);
-            return testConstructor.newInstance(name);
-        }
-        catch (Exception ignore) {
-            return null;
-        }
     }
 }
