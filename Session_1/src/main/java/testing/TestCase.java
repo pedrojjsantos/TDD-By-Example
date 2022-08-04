@@ -20,8 +20,9 @@ public class TestCase {
         try {   klass.getMethod(methodName).invoke(this); }
         catch (InvocationTargetException e) {
             result.testFailed(methodName, e.getCause());
+        } finally {
+            this.tearDown();
         }
 
-        this.tearDown();
     }
 }

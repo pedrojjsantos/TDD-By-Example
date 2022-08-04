@@ -20,6 +20,13 @@ public class TestCaseTest extends TestCase {
         assert test.log.equals("setUp testMethod tearDown ");
     }
 
+    public void testRunTearDownAfterTheTestFails() throws Exception {
+        WasRun test = new WasRun("testBrokenMethod");
+        test.run(result);
+        assert result.summary().equals("1 run, 1 failed");
+        assert test.log.equals("setUp testBrokenMethod tearDown ") : test.log;
+    }
+
     public void testResult() throws Exception {
         WasRun test = new WasRun("testMethod");
         test.run(result);
