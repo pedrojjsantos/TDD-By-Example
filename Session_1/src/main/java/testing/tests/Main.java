@@ -11,6 +11,7 @@ public class Main {
         runTestClass(TestCaseTest.class);
         runTestClass(TestResultTest.class);
         runTestClass(TestSuiteTest.class);
+        runTestClass(AssertTest.class);
     }
 
     private static void runTestClass(Class<? extends TestCase> testClass) throws Exception {
@@ -30,3 +31,6 @@ public class Main {
                 testClass.getSimpleName(), result.summary(), description);
     }
 }
+
+// pass: \u2714
+// fail: \u2716
