@@ -8,7 +8,19 @@ public class Assert {
     private Assert() {}
 
     public static void assertEquals(Object expected, Object actual) {
-        assert isEqual(expected, actual);
+        if (!isEqual(expected, actual)) {
+            String errorMsg = "\tExpected: %s%n\tActual: %s".formatted(
+                    objectToString(expected), objectToString(actual));
+            throw new AssertionError(errorMsg.formatted());
+        }
+    }
+
+    private static String objectToString(Object obj) {
+        if (obj == null)
+            return "null";
+        if (obj.getClass() == String.class)
+            return "\"%s\"".formatted(obj);
+        return obj.toString();
     }
 
     public static void assertNotEquals(Object expected, Object actual) {

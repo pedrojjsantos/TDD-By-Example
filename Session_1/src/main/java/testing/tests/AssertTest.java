@@ -88,6 +88,22 @@ public class AssertTest extends TestCase {
                 "null != null";
     }
 
+    public void testErrorMsg() {
+        String equalsError = "\tExpected: %d%n\tActual: %d".formatted(1, 2);
+        String equalsActualError = getErrorMsg(() -> Assert.assertEquals(1, 2));
+
+        Assert.assertEquals(equalsError, equalsActualError);
+    }
+
+    private String getErrorMsg(Runnable fn) {
+        try {
+            fn.run();
+            throw new RuntimeException("Expected to throw an AssertionError");
+        } catch (AssertionError err) {
+            return err.getMessage();
+        }
+    }
+
     private boolean throwsAssertionError(Runnable fn) {
         try {
             fn.run();
