@@ -21,19 +21,19 @@ public class AssertTest extends TestCase {
     }
 
     public void testEquals() {
-        assert !throwsAssertionError(() -> Assert.assertEquals(1, 1))         : "1 != 1";
-        assert throwsAssertionError(() -> Assert.assertEquals(1, 2))          : "1 == 2";
-        assert !throwsAssertionError(() -> Assert.assertEquals(null, null))   : "null != null";
-        assert throwsAssertionError(() -> Assert.assertEquals(null, "abc"))   : "null == \"abc\"";
-        assert throwsAssertionError(() -> Assert.assertEquals("", null))      : "\"\" == null";
+        assert !throwsAssertionError(() -> Assert.assertEquals(1, 1)) : "1 != 1";
+        assert throwsAssertionError(() -> Assert.assertEquals(1, 2)) : "1 == 2";
+        assert !throwsAssertionError(() -> Assert.assertEquals(null, null)) : "null != null";
+        assert throwsAssertionError(() -> Assert.assertEquals(null, "abc")) : "null == \"abc\"";
+        assert throwsAssertionError(() -> Assert.assertEquals("", null)) : "\"\" == null";
     }
 
     public void testNotEquals() {
-        assert throwsAssertionError(() -> Assert.assertNotEquals(1, 1))         : "1 != 1";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals(1, 2))          : "1 == 2";
-        assert throwsAssertionError(() -> Assert.assertNotEquals(null, null))   : "null != null";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals(null, "abc"))   : "null == \"abc\"";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals("", null))      : "\"\" == null";
+        assert throwsAssertionError(() -> Assert.assertNotEquals(1, 1)) : "1 != 1";
+        assert !throwsAssertionError(() -> Assert.assertNotEquals(1, 2)) : "1 == 2";
+        assert throwsAssertionError(() -> Assert.assertNotEquals(null, null)) : "null != null";
+        assert !throwsAssertionError(() -> Assert.assertNotEquals(null, "abc")) : "null == \"abc\"";
+        assert !throwsAssertionError(() -> Assert.assertNotEquals("", null)) : "\"\" == null";
     }
 
     public void testTrueAndFalse() {
@@ -45,7 +45,7 @@ public class AssertTest extends TestCase {
     }
 
     public void testFail() {
-        assert throwsAssertionError(() -> Assert.fail());
+        assert throwsAssertionError(Assert::fail);
     }
 
     public void testNullAndNotNull() {
@@ -73,14 +73,26 @@ public class AssertTest extends TestCase {
         assert throwsAssertionError(() -> Assert.assertContains(ints, "a", "b", "c"));
     }
 
-    private boolean throwsAssertionError(Runnable fn) {
-        return isThrown(AssertionError.class, fn);
+    public void testThrows() {
+        final Runnable throwingNull = () -> {
+            throw new NullPointerException("null");
+        };
+        final Runnable notThrowingRun = () -> {
+        };
+
+        assert throwsAssertionError(() -> Assert.assertThrows(AssertionError.class, throwingNull)) :
+                "AssertionError == NullPointerException";
+        assert !throwsAssertionError(() -> Assert.assertThrows(NullPointerException.class, throwingNull)) :
+                "NullPointerException != NullPointerException";
+        assert !throwsAssertionError(() -> Assert.assertThrows(null, notThrowingRun)) :
+                "null != null";
     }
 
-    private boolean isThrown(Class<? extends Throwable> th, Runnable fn) {
-        try { fn.run(); }
-        catch (Throwable error) {
-            return error.getClass() == th;
+    private boolean throwsAssertionError(Runnable fn) {
+        try {
+            fn.run();
+        } catch (Throwable error) {
+            return error.getClass() == AssertionError.class;
         }
         return false;
     }

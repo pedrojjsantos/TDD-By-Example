@@ -54,4 +54,14 @@ public class Assert {
             return actual == null;
         else return expected.equals(actual);
     }
+
+    public static void assertThrows(Class<? extends Throwable> expectedThrowable, Runnable throwingRunnable) {
+        try {
+            throwingRunnable.run();
+            if (expectedThrowable != null)
+                fail();
+        } catch (Throwable error) {
+            assert expectedThrowable == error.getClass();
+        }
+    }
 }
