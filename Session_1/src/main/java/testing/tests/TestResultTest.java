@@ -49,10 +49,10 @@ public class TestResultTest extends TestCase {
         Assert.assertEquals(2, failedTests.size());
 
         Assert.assertEquals("fail1", failedTests.get(0).getName());
-        Assert.assertEquals("AssertionError", failedTests.get(0).getErrorMsg());
+        Assert.assertEquals("AssertionError", failedTests.get(0).getDescriptionHeader());
 
         Assert.assertEquals("fail2", failedTests.get(1).getName());
-        Assert.assertEquals("NullPointerException", failedTests.get(1).getErrorMsg());
+        Assert.assertEquals("NullPointerException", failedTests.get(1).getDescriptionHeader());
     }
 
     public void testFailedTestsMsg() {

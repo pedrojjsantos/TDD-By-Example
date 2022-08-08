@@ -8,9 +8,27 @@ public class Assert {
     private Assert() {}
 
     public static void assertEquals(Object expected, Object actual) {
+        assertEquals("", expected, actual);
+    }
+    public static void assertEquals(String msg, Object expected, Object actual) {
+        String treatedMsg = treatParamMessage(msg);
+
         if (!isEqual(expected, actual)) {
-            String errorMsg = "\tExpected: %s%n\tActual: %s".formatted(
-                    objectToString(expected), objectToString(actual));
+            String errorMsg = "%sExpected: %s%nActual: %s".formatted(
+                    treatedMsg, objectToString(expected), objectToString(actual));
+            throw new AssertionError(errorMsg.formatted());
+        }
+    }
+
+    public static void assertNotEquals(Object expected, Object actual) {
+        assertNotEquals("", expected, actual);
+    }
+    public static void assertNotEquals(String msg, Object expected, Object actual) {
+        String treatedMsg = treatParamMessage(msg);
+
+        if (isEqual(expected, actual)) {
+            String errorMsg = "%sExpected not: %s".formatted(
+                    treatedMsg, objectToString(actual));
             throw new AssertionError(errorMsg.formatted());
         }
     }
@@ -23,8 +41,11 @@ public class Assert {
         return obj.toString();
     }
 
-    public static void assertNotEquals(Object expected, Object actual) {
-        assert !isEqual(expected, actual);
+    private static String treatParamMessage(String msg) {
+        if (msg == null || msg.isEmpty())
+            return "";
+
+        return msg + "%n";
     }
 
     public static void assertTrue(boolean condition) {

@@ -29,11 +29,11 @@ public class TestResult {
     public String gatherErrorMsgs() {
         StringBuilder builder = new StringBuilder();
         if (failedSetUp != null)
-            builder.append(failedSetUp.getErrorMsg());
+            builder.append(failedSetUp.getDescriptionHeader());
         else
             for (Fail test : failedTests) {
                 String name = test.getName();
-                String msg = test.getErrorMsg();
+                String msg = test.getDescriptionHeader();
 
                 builder.append(ERROR_DESCRIPTION_HEADER.formatted(name, msg));
             }
@@ -57,7 +57,7 @@ public class TestResult {
             return name;
         }
 
-        public String getErrorMsg() {
+        public String getDescriptionHeader() {
             if (error == null) return "";
             String errorClass = error.getClass().getSimpleName();
             if (error.getMessage() == null)

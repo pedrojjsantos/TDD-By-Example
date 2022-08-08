@@ -36,6 +36,19 @@ public class AssertTest extends TestCase {
         assert !throwsAssertionError(() -> Assert.assertNotEquals("", null)) : "\"\" == null";
     }
 
+    public void testEqualsErrorMsg() {
+        String equalsError = "Expected: %d%nActual: %d".formatted(1, 2);
+        String equalsActualError = getErrorMsg(() -> Assert.assertEquals(1, 2));
+
+        Assert.assertEquals(equalsError, equalsActualError);
+
+        String equalsErrorMsg = "wrong%nExpected: %d%nActual: %d".formatted(1, 2);
+        String equalsActualErrorMsg = getErrorMsg(
+                () -> Assert.assertEquals("wrong", 1, 2));
+
+        Assert.assertEquals(equalsErrorMsg,  equalsActualErrorMsg);
+    }
+
     public void testTrueAndFalse() {
         assert throwsAssertionError(() -> Assert.assertTrue(false));
         assert !throwsAssertionError(() -> Assert.assertTrue(true));
@@ -86,13 +99,6 @@ public class AssertTest extends TestCase {
                 "NullPointerException != NullPointerException";
         assert !throwsAssertionError(() -> Assert.assertThrows(null, notThrowingRun)) :
                 "null != null";
-    }
-
-    public void testErrorMsg() {
-        String equalsError = "\tExpected: %d%n\tActual: %d".formatted(1, 2);
-        String equalsActualError = getErrorMsg(() -> Assert.assertEquals(1, 2));
-
-        Assert.assertEquals(equalsError, equalsActualError);
     }
 
     private String getErrorMsg(Runnable fn) {
