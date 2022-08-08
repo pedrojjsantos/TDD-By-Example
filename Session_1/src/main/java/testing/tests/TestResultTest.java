@@ -1,5 +1,6 @@
 package testing.tests;
 
+import testing.Assert;
 import testing.TestCase;
 import testing.TestResult;
 
@@ -18,61 +19,61 @@ public class TestResultTest extends TestCase {
     }
 
     public void testSummaryWithNoFails() {
-        assert result.summary().equals("0 run, 0 failed");
+        Assert.assertEquals("0 run, 0 failed", result.summary());
 
         result.testStarted();
-        assert result.summary().equals("1 run, 0 failed");
+        Assert.assertEquals("1 run, 0 failed", result.summary());
 
         result.testStarted();
-        assert result.summary().equals("2 run, 0 failed");
+        Assert.assertEquals("2 run, 0 failed", result.summary());
     }
 
     public void testSummaryWithFails() {
         result.testFailed("", null);
-        assert result.summary().equals("0 run, 1 failed");
+        Assert.assertEquals("0 run, 1 failed", result.summary());
 
         result.testStarted();
-        assert result.summary().equals("1 run, 1 failed");
+        Assert.assertEquals("1 run, 1 failed", result.summary());
 
         result.testFailed("", null);
-        assert result.summary().equals("1 run, 2 failed");
+        Assert.assertEquals("1 run, 2 failed", result.summary());
     }
 
     public void testListFailedTests() {
         List<TestResult.Fail> failedTests = result.listFailedTests();
-        assert failedTests.size() == 0;
+        Assert.assertTrue(failedTests.isEmpty());
 
         result.testFailed("fail1", new AssertionError());
         result.testFailed("fail2", new NullPointerException());
 
-        assert failedTests.size() == 2;
+        Assert.assertEquals(2, failedTests.size());
 
-        assert failedTests.get(0).getName().equals("fail1");
-        assert failedTests.get(0).getErrorMsg().equals("AssertionError");
+        Assert.assertEquals("fail1", failedTests.get(0).getName());
+        Assert.assertEquals("AssertionError", failedTests.get(0).getErrorMsg());
 
-        assert failedTests.get(1).getName().equals("fail2");
-        assert failedTests.get(1).getErrorMsg().equals("NullPointerException");
+        Assert.assertEquals("fail2", failedTests.get(1).getName());
+        Assert.assertEquals("NullPointerException", failedTests.get(1).getErrorMsg());
     }
 
-    public void testFailedTestsDescription() throws Exception {
-        String description = result.description();
-        assert description.isEmpty();
+    public void testFailedTestsMsg() {
+        String errorMsgs = result.gatherErrorMsgs();
+        Assert.assertTrue(errorMsgs.isEmpty());
 
         result.testFailed("fail1", new AssertionError("failed"));
         result.testFailed("fail2", new NullPointerException());
 
-        description = result.description();
-        List<String> lines = description.lines().toList();
+        errorMsgs = result.gatherErrorMsgs();
+        List<String> lines = errorMsgs.lines().toList();
 
 
-        assert lines.size() == 2;
-        assert lines.get(0).equals("fail1: AssertionError: \"failed\"");
-        assert lines.get(1).equals("fail2: NullPointerException");
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals("fail1: AssertionError: \"failed\"", lines.get(0));
+        Assert.assertEquals("fail2: NullPointerException", lines.get(1));
     }
 
     public void testResultBrokenSetUp() {
         result.setUpFailed(new NullPointerException("Ops"));
-        assert result.summary().equals("setUp method failed!") : result.summary();
-        assert result.description().equals("NullPointerException: \"Ops\"") : result.description();
+        Assert.assertEquals("setUp method failed!", result.summary());
+        Assert.assertEquals("NullPointerException: \"Ops\"", result.gatherErrorMsgs());
     }
 }

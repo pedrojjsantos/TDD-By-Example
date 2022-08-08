@@ -1,5 +1,6 @@
 package testing.tests;
 
+import testing.Assert;
 import testing.TestCase;
 import testing.TestResult;
 import testing.TestSuite;
@@ -23,12 +24,12 @@ public class TestSuiteTest extends TestCase {
         suite.add(new WasRun("testAnotherBrokenMethod"));
         suite.run(result);
 
-        assert "3 run, 2 failed".equals(result.summary());
+        Assert.assertEquals("3 run, 2 failed", result.summary());
     }
 
     public void testCreateSuiteFromClass() throws Exception {
         TestSuite suite = new TestSuite(WasRun.class);
         suite.run(result);
-        assert "3 run, 2 failed".equals(result.summary());
+        Assert.assertEquals("3 run, 2 failed", result.summary());
     }
 }

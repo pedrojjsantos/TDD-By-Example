@@ -19,26 +19,19 @@ public class TestCaseTest extends TestCase {
     public void testTemplateMethod() throws Exception {
         WasRun test = new WasRun("testMethod");
         test.run(result);
-        assert test.log.equals("setUp testMethod tearDown ");
-    }
-
-    public void testRunTearDownAfterTheTestFails() throws Exception {
-        WasRun test = new WasRun("testBrokenMethod");
-        test.run(result);
-        assert result.summary().equals("1 run, 1 failed");
-        assert test.log.equals("setUp testBrokenMethod tearDown ") : test.log;
+        Assert.assertEquals("setUp testMethod tearDown ", test.log);
     }
 
     public void testResult() throws Exception {
         WasRun test = new WasRun("testMethod");
         test.run(result);
-        assert "1 run, 0 failed".equals(result.summary()) : result.summary();
+        Assert.assertEquals("1 run, 0 failed", result.summary());
     }
 
     public void testFailedResult() throws Exception {
         WasRun test = new WasRun("testBrokenMethod");
         test.run(result);
-        assert "1 run, 1 failed".equals(result.summary()) : result.summary();
+        Assert.assertEquals("1 run, 1 failed", result.summary());
     }
 
     public void testResultListFailedTests() throws Exception {
@@ -47,28 +40,37 @@ public class TestCaseTest extends TestCase {
 
         List<TestResult.Fail> failedTests = result.listFailedTests();
 
-        assert failedTests.size() == 2;
-        assert failedTests.get(0).getName().equals("testBrokenMethod");
-        assert failedTests.get(1).getName().equals("testAnotherBrokenMethod");
+        Assert.assertEquals(2, failedTests.size());
+        Assert.assertEquals("testBrokenMethod", failedTests.get(0).getName());
+        Assert.assertEquals("testAnotherBrokenMethod", failedTests.get(1).getName());
     }
 
-    public void testResultFailedTestDescription() throws Exception {
+    public void testResultFailedTestErrorMessages() throws Exception {
         TestSuite suite = new TestSuite(WasRun.class);
         suite.run(result);
 
-        String description = result.description();
-        List<String> lines = description.lines().toList();
+        String errorMsgs = result.gatherErrorMsgs();
+        List<String> lines = errorMsgs.lines().toList();
 
-        assert lines.size() == 2;
-        assert lines.get(0).equals("testBrokenMethod: AssertionError: \"asserting false\"");
-        assert lines.get(1).equals("testAnotherBrokenMethod: NullPointerException");
+        Assert.assertEquals(2, lines.size());
+        Assert.assertEquals(
+                "testBrokenMethod: AssertionError: \"asserting false\"", lines.get(0));
+        Assert.assertEquals("testAnotherBrokenMethod: NullPointerException", lines.get(1));
     }
 
     public void testBrokenSetUp() throws Exception {
         BrokenWasRun test = new BrokenWasRun("testMethod");
         test.run(result);
 
-        assert test.log.equals("setUp tearDown ") : test.log;
-        assert result.summary().equals("setUp method failed!") : result.summary();
+        Assert.assertEquals("setUp tearDown ", test.log);
+        Assert.assertEquals("setUp method failed!", result.summary());
+    }
+
+    public void testRunTearDownAfterTheTestFails() throws Exception {
+        WasRun test = new WasRun("testBrokenMethod");
+        test.run(result);
+
+        Assert.assertEquals("1 run, 1 failed", result.summary());
+        Assert.assertEquals("setUp testBrokenMethod tearDown ", test.log);
     }
 }

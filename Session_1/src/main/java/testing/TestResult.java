@@ -26,7 +26,7 @@ public class TestResult {
         return failedTests;
     }
 
-    public String description() {
+    public String gatherErrorMsgs() {
         StringBuilder builder = new StringBuilder();
         if (failedSetUp != null)
             builder.append(failedSetUp.getErrorMsg());

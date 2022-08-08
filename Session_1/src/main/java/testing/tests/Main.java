@@ -21,7 +21,7 @@ public class Main {
         suite.run(result);
 
         String description =
-                result.description()
+                result.gatherErrorMsgs()
                         .lines()
                         .map(str -> '\t' + str)
                         .collect(Collectors.joining("%n"))
