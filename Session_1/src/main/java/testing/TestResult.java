@@ -2,9 +2,10 @@ package testing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestResult {
-    static final String ERROR_DESCRIPTION_HEADER = "%s: %s%n";
+    static final String ERROR_DESCRIPTION_HEADER = "%s: %s%s";
     Fail failedSetUp = null;
     List<Fail> failedTests = new ArrayList<>();
     int runCount = 0;
@@ -26,18 +27,21 @@ public class TestResult {
         return failedTests;
     }
 
-    public String gatherErrorMsgs() {
-        StringBuilder builder = new StringBuilder();
-        if (failedSetUp != null)
-            builder.append(failedSetUp.getDescriptionHeader());
-        else
+    public List<String> getFailDescriptions() {
+        List<String> descriptionList = new ArrayList<>();
+        if (failedSetUp != null) {
+            descriptionList.add(failedSetUp.getDescriptionHeader());
+        }
+        else {
             for (Fail test : failedTests) {
                 String name = test.getName();
                 String msg = test.getDescriptionHeader();
+                String description = test.getDescription();
 
-                builder.append(ERROR_DESCRIPTION_HEADER.formatted(name, msg));
+                descriptionList.add(ERROR_DESCRIPTION_HEADER.formatted(name, msg, description));
             }
-        return builder.toString();
+        }
+        return descriptionList;
     }
 
     public void setUpFailed(Throwable error) {
@@ -47,10 +51,13 @@ public class TestResult {
     public static class Fail {
         String name;
         Throwable error;
+        String header = "";
+        String description = "";
 
         Fail(String testName, Throwable error) {
             this.name = testName;
             this.error = error;
+            setMessages();
         }
 
         public String getName() {
@@ -58,11 +65,33 @@ public class TestResult {
         }
 
         public String getDescriptionHeader() {
-            if (error == null) return "";
+            return header;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        private void setMessages() {
+            if (error == null) return;
+
             String errorClass = error.getClass().getSimpleName();
-            if (error.getMessage() == null)
-                return errorClass;
-            return errorClass + ": \"" + error.getMessage() + '"';
+
+            if (error.getMessage() == null || error.getMessage().isEmpty()) {
+                header = errorClass;
+                return;
+            }
+
+            List<String> lines = error.getMessage().lines().toList();
+            header = "%s: %s".formatted(errorClass, lines.get(0));
+
+            if (lines.size() > 1) {
+                String newLine = "%n".formatted();
+                description = newLine + lines.stream()
+                        .skip(1)
+                        .map(str -> '\t' + str)
+                        .collect(Collectors.joining(newLine));
+            }
         }
     }
 }

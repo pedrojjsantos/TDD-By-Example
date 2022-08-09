@@ -1,5 +1,6 @@
 package testing.tests;
 
+import testing.Assert;
 import testing.TestCase;
 
 public class WasRun extends TestCase {
@@ -14,7 +15,7 @@ public class WasRun extends TestCase {
     }
     public void testBrokenMethod() {
         log += "testBrokenMethod ";
-        assert false : "asserting false";
+        Assert.assertEquals("asserting false", 1, 2);
     }
     public void testAnotherBrokenMethod() {
         log += "testAnotherMethod ";

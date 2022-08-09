@@ -49,13 +49,16 @@ public class TestCaseTest extends TestCase {
         TestSuite suite = new TestSuite(WasRun.class);
         suite.run(result);
 
-        String errorMsgs = result.gatherErrorMsgs();
-        List<String> lines = errorMsgs.lines().toList();
+        List<String> errorMsgs = result.getFailDescriptions();
+        Assert.assertEquals(2, errorMsgs.size());
+        Assert.assertEquals("testAnotherBrokenMethod: NullPointerException", errorMsgs.get(1));
 
-        Assert.assertEquals(2, lines.size());
+        List<String> lines = errorMsgs.get(0).lines().toList();
+        Assert.assertEquals(3, lines.size());
         Assert.assertEquals(
-                "testBrokenMethod: AssertionError: \"asserting false\"", lines.get(0));
-        Assert.assertEquals("testAnotherBrokenMethod: NullPointerException", lines.get(1));
+                "testBrokenMethod: AssertionError: asserting false", lines.get(0));
+        Assert.assertEquals("\tExpected: 1", lines.get(1));
+        Assert.assertEquals("\tActual: 2", lines.get(2));
     }
 
     public void testBrokenSetUp() throws Exception {

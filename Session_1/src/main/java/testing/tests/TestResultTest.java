@@ -56,24 +56,27 @@ public class TestResultTest extends TestCase {
     }
 
     public void testFailedTestsMsg() {
-        String errorMsgs = result.gatherErrorMsgs();
+        List<String> errorMsgs = result.getFailDescriptions();
         Assert.assertTrue(errorMsgs.isEmpty());
 
-        result.testFailed("fail1", new AssertionError("failed"));
+        result.testFailed("fail1", new AssertionError("failed%nExpected not: 2".formatted()));
         result.testFailed("fail2", new NullPointerException());
 
-        errorMsgs = result.gatherErrorMsgs();
-        List<String> lines = errorMsgs.lines().toList();
+        errorMsgs = result.getFailDescriptions();
+        Assert.assertEquals(2, errorMsgs.size());
 
+        Assert.assertEquals("fail2: NullPointerException", errorMsgs.get(1));
 
+        List<String> lines = errorMsgs.get(0).lines().toList();
         Assert.assertEquals(2, lines.size());
-        Assert.assertEquals("fail1: AssertionError: \"failed\"", lines.get(0));
-        Assert.assertEquals("fail2: NullPointerException", lines.get(1));
+        Assert.assertEquals("fail1: AssertionError: failed", lines.get(0));
+        Assert.assertEquals("\tExpected not: 2", lines.get(1));
     }
 
     public void testResultBrokenSetUp() {
         result.setUpFailed(new NullPointerException("Ops"));
+        Assert.assertEquals(1, result.getFailDescriptions().size());
         Assert.assertEquals("setUp method failed!", result.summary());
-        Assert.assertEquals("NullPointerException: \"Ops\"", result.gatherErrorMsgs());
+        Assert.assertEquals("NullPointerException: Ops", result.getFailDescriptions().get(0));
     }
 }

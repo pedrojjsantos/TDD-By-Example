@@ -37,7 +37,7 @@ public class AssertTest extends TestCase {
     }
 
     public void testEqualsErrorMsg() {
-        String equalsError = "Expected: %d%nActual: %d".formatted(1, 2);
+        String equalsError = "%nExpected: %d%nActual: %d".formatted(1, 2);
         String equalsActualError = getErrorMsg(() -> Assert.assertEquals(1, 2));
 
         Assert.assertEquals(equalsError, equalsActualError);

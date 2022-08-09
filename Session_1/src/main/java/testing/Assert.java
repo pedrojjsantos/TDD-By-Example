@@ -43,7 +43,7 @@ public class Assert {
 
     private static String treatParamMessage(String msg) {
         if (msg == null || msg.isEmpty())
-            return "";
+            return "%n";
 
         return msg + "%n";
     }
