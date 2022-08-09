@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestSuite {
-    List<TestCase> tests = new ArrayList<>();
+public class TestSuite implements Test {
+    List<Test> tests = new ArrayList<>();
 
     public TestSuite() {}
 
@@ -29,12 +29,12 @@ public class TestSuite {
             tests.add(testConstructor.newInstance(name));
     }
 
-    public void add(TestCase test) {
+    public void add(Test test) {
         tests.add(test);
     }
 
     public void run(TestResult result) throws Exception {
-        for (TestCase test : tests)
+        for (Test test : tests)
             test.run(result);
     }
 }

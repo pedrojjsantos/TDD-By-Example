@@ -2,7 +2,7 @@ package testing;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class TestCase {
+public class TestCase implements Test{
     String methodName;
 
     protected TestCase(String methodName) {

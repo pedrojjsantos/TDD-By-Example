@@ -32,4 +32,13 @@ public class TestSuiteTest extends TestCase {
         suite.run(result);
         Assert.assertEquals("3 run, 2 failed", result.summary());
     }
+
+    public void testAddSuite() throws Exception {
+        TestSuite innerSuit = new TestSuite(WasRun.class);
+        TestSuite suite = new TestSuite();
+        suite.add(innerSuit);
+        suite.run(result);
+
+        Assert.assertEquals("3 run, 2 failed", result.summary());
+    }
 }
