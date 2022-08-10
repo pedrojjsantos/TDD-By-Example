@@ -21,32 +21,41 @@ public class AssertTest extends TestCase {
     }
 
     public void testEquals() {
-        assert !throwsAssertionError(() -> Assert.assertEquals(1, 1)) : "1 != 1";
-        assert throwsAssertionError(() -> Assert.assertEquals(1, 2)) : "1 == 2";
-        assert !throwsAssertionError(() -> Assert.assertEquals(null, null)) : "null != null";
-        assert throwsAssertionError(() -> Assert.assertEquals(null, "abc")) : "null == \"abc\"";
-        assert throwsAssertionError(() -> Assert.assertEquals("", null)) : "\"\" == null";
+        final String equalsError = "%s%nExpected: %s%nActual: %s";
+
+        Runnable oneEqualsOne = () -> Assert.assertEquals(1,1);
+        Runnable oneEqualsTwoWithMessage = () -> Assert.assertEquals("Error",1,2);
+        Runnable nullEqualsTwo = () -> Assert.assertEquals(null,1);
+
+        Assert.assertNull(getErrorMsg(oneEqualsOne));
+
+
+        Assert.assertEquals(
+                equalsError.formatted("Error", 1, 2),
+                getErrorMsg(oneEqualsTwoWithMessage));
+
+        Assert.assertEquals(
+                equalsError.formatted("", null, 1),
+                getErrorMsg(nullEqualsTwo));
     }
 
     public void testNotEquals() {
-        assert throwsAssertionError(() -> Assert.assertNotEquals(1, 1)) : "1 != 1";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals(1, 2)) : "1 == 2";
-        assert throwsAssertionError(() -> Assert.assertNotEquals(null, null)) : "null != null";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals(null, "abc")) : "null == \"abc\"";
-        assert !throwsAssertionError(() -> Assert.assertNotEquals("", null)) : "\"\" == null";
-    }
+        final String notEqualsError = "%s%nExpected not: %s";
 
-    public void testEqualsErrorMsg() {
-        String equalsError = "%nExpected: %d%nActual: %d".formatted(1, 2);
-        String equalsActualError = getErrorMsg(() -> Assert.assertEquals(1, 2));
+        Runnable oneNotEqualsTwo = () -> Assert.assertNotEquals(1,2);
+        Runnable oneNotEqualsOneWithMessage = () -> Assert.assertNotEquals("Error",1,1);
+        Runnable nullNotEqualsNull = () -> Assert.assertNotEquals(null,null);
 
-        Assert.assertEquals(equalsError, equalsActualError);
+        Assert.assertNull(getErrorMsg(oneNotEqualsTwo));
 
-        String equalsErrorMsg = "wrong%nExpected: %d%nActual: %d".formatted(1, 2);
-        String equalsActualErrorMsg = getErrorMsg(
-                () -> Assert.assertEquals("wrong", 1, 2));
 
-        Assert.assertEquals(equalsErrorMsg,  equalsActualErrorMsg);
+        Assert.assertEquals(
+                notEqualsError.formatted("Error", 1),
+                getErrorMsg(oneNotEqualsOneWithMessage));
+
+        Assert.assertEquals(
+                notEqualsError.formatted("", null),
+                getErrorMsg(nullNotEqualsNull));
     }
 
     public void testTrueAndFalse() {
@@ -104,7 +113,7 @@ public class AssertTest extends TestCase {
     private String getErrorMsg(Runnable fn) {
         try {
             fn.run();
-            throw new RuntimeException("Expected to throw an AssertionError");
+            return null;
         } catch (AssertionError err) {
             return err.getMessage();
         }
