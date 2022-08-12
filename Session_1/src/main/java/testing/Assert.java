@@ -60,20 +60,36 @@ public class Assert {
         }
     }
 
+    public static void fail() {
+        throw new AssertionError("");
+    }
     public static void fail(String msg) {
         throw new AssertionError(msg == null ? "" : msg);
     }
 
-    public static void fail() {
-        throw new AssertionError("");
-    }
-
     public static void assertNull(Object obj) {
-        assert obj == null;
+        assertNull("", obj);
+    }
+    public static void assertNull(String msg, Object obj) {
+        String treatedMsg = treatParamMessage(msg);
+
+        if (obj != null) {
+            String errorMsg = "%sExpected: null%nActual: %s"
+                    .formatted(treatedMsg, objectToString(obj));
+            throw new AssertionError(errorMsg.formatted());
+        }
     }
 
     public static void assertNotNull(Object obj) {
         assert obj != null;
+    }
+    public static void assertNotNull(String msg, Object obj) {
+        String treatedMsg = treatParamMessage(msg);
+
+        if (obj == null) {
+            String errorMsg = treatedMsg + "Expected not: null";
+            throw new AssertionError(errorMsg.formatted());
+        }
     }
 
     @SafeVarargs

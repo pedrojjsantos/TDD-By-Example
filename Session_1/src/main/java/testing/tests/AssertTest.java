@@ -86,13 +86,26 @@ public class AssertTest extends TestCase {
     }
 
     public void testNullAndNotNull() {
-        assert throwsAssertionError(() -> Assert.assertNull("abc"));
-        assert throwsAssertionError(() -> Assert.assertNull(1));
-        assert !throwsAssertionError(() -> Assert.assertNull(null));
+        final String assertNullError = "%s%nExpected: null%nActual: %s";
+        final String assertNotNullError = "%s%nExpected not: null";
 
-        assert !throwsAssertionError(() -> Assert.assertNotNull("abc"));
-        assert !throwsAssertionError(() -> Assert.assertNotNull(1));
-        assert throwsAssertionError(() -> Assert.assertNotNull(null));
+        Runnable oneAssertNull = () -> Assert.assertNull("Ops", 1);
+        Runnable nullAssertNull = () -> Assert.assertNull(null);
+        Runnable oneAssertNotNull = () -> Assert.assertNotNull(1);
+        Runnable nullAssertNotNull = () -> Assert.assertNotNull("", null);
+
+        Assert.assertEquals(
+                assertNullError.formatted("Ops", 1),
+                getErrorMsg(oneAssertNull));
+
+        Assert.assertEquals(null, getErrorMsg(nullAssertNull));
+
+
+        Assert.assertEquals(
+                assertNotNullError.formatted(""),
+                getErrorMsg(nullAssertNotNull));
+
+        Assert.assertEquals(null, getErrorMsg(oneAssertNotNull));
     }
 
     public void testContains() {
