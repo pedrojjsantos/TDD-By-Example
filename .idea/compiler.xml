@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="tdd-by-example" />
         <module name="Session_1" />
+        <module name="tdd-by-example" />
       </profile>
     </annotationProcessing>
   </component>
