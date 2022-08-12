@@ -49,15 +49,23 @@ public class Assert {
     }
 
     public static void assertTrue(boolean condition) {
-        assert condition;
+        if (!condition) {
+            throw new AssertionError("%nExpected: 'True'".formatted());
+        }
     }
 
     public static void assertFalse(boolean condition) {
-        assert !condition;
+        if (condition) {
+            throw new AssertionError("%nExpected: 'False'".formatted());
+        }
+    }
+
+    public static void fail(String msg) {
+        throw new AssertionError(msg == null ? "" : msg);
     }
 
     public static void fail() {
-        assert false;
+        throw new AssertionError("");
     }
 
     public static void assertNull(Object obj) {

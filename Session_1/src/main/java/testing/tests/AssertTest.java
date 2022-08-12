@@ -4,9 +4,7 @@ import testing.Assert;
 import testing.TestCase;
 import testing.TestResult;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class AssertTest extends TestCase {
     AssertTest(String methodName) {
@@ -59,15 +57,32 @@ public class AssertTest extends TestCase {
     }
 
     public void testTrueAndFalse() {
-        assert throwsAssertionError(() -> Assert.assertTrue(false));
-        assert !throwsAssertionError(() -> Assert.assertTrue(true));
+        final String assertTrueError = "%s%nExpected: 'True'";
+        final String assertFalseError = "%s%nExpected: 'False'";
 
-        assert throwsAssertionError(() -> Assert.assertFalse(true));
-        assert !throwsAssertionError(() -> Assert.assertFalse(false));
+        Runnable trueAssertTrue = () -> Assert.assertTrue(true);
+        Runnable falseAssertTrue = () -> Assert.assertTrue(false);
+        Runnable trueAssertFalse = () -> Assert.assertFalse(true);
+        Runnable falseAssertFalse = () -> Assert.assertFalse(false);
+
+        Assert.assertNull(getErrorMsg(trueAssertTrue));
+        Assert.assertNull(getErrorMsg(falseAssertFalse));
+
+        Assert.assertEquals(
+                assertTrueError.formatted(""),
+                getErrorMsg(falseAssertTrue));
+
+        Assert.assertEquals(
+                assertFalseError.formatted(""),
+                getErrorMsg(trueAssertFalse));
     }
 
     public void testFail() {
-        assert throwsAssertionError(Assert::fail);
+        Runnable failWithoutMsg = Assert::fail;
+        Runnable failWithMsg = () -> Assert.fail("Failed");
+
+        Assert.assertEquals("", getErrorMsg(failWithoutMsg));
+        Assert.assertEquals("Failed", getErrorMsg(failWithMsg));
     }
 
     public void testNullAndNotNull() {
