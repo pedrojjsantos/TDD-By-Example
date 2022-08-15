@@ -61,15 +61,15 @@ public class AssertTest extends TestCase {
         final String assertFalseError = "%s%nExpected: 'False'";
 
         Runnable trueAssertTrue = () -> Assert.assertTrue(true);
-        Runnable falseAssertTrue = () -> Assert.assertTrue(false);
+        Runnable falseAssertTrue = () -> Assert.assertTrue("Should be true", false);
         Runnable trueAssertFalse = () -> Assert.assertFalse(true);
-        Runnable falseAssertFalse = () -> Assert.assertFalse(false);
+        Runnable falseAssertFalse = () -> Assert.assertFalse("Should be false", false);
 
         Assert.assertNull(getErrorMsg(trueAssertTrue));
         Assert.assertNull(getErrorMsg(falseAssertFalse));
 
-        Assert.assertEquals(
-                assertTrueError.formatted(""),
+        Assert.assertEquals( "true",
+                assertTrueError.formatted("Should be true"),
                 getErrorMsg(falseAssertTrue));
 
         Assert.assertEquals(
@@ -109,18 +109,35 @@ public class AssertTest extends TestCase {
     }
 
     public void testContains() {
+        final String containsError = "%s%nExpected '%s' in %s";
+
+        Integer[] integerArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        List<Integer> integerList = List.of(integerArray);
+
+        Runnable containsList = () -> Assert.assertContains(integerList, 1, 2, 3, 4, 5);
+        Runnable containsListErr = () -> Assert.assertContains(integerList, 1, 2, 11);
+        Runnable containsArray = () -> Assert.assertContains(integerArray, 1, 2, 3, 4, 5);
+        Runnable containsArrayErr = () -> Assert.assertContains(integerArray, 1, 2, 11);
+
+        Assert.assertEquals(null, getErrorMsg(containsList));
+        Assert.assertEquals(
+                containsError.formatted("", 11, integerList),
+                getErrorMsg(containsListErr));
+
+        Assert.assertEquals(null, getErrorMsg(containsArray));
+        Assert.assertEquals(
+                containsError.formatted("", 11, List.of(integerArray)),
+                getErrorMsg(containsArrayErr));
+
         assert throwsAssertionError(() -> Assert.assertContains((Collection<String>) null));
         assert throwsAssertionError(() -> Assert.assertContains(new ArrayList<>(), ""));
         assert !throwsAssertionError(() -> Assert.assertContains(new ArrayList<String>()));
 
-        Integer[] ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        List<String> strings = List.of(new String[]{"a", "ab", "abc", "bc", "c"});
 
-        assert !throwsAssertionError(() -> Assert.assertContains(strings, "a", "c"));
-        assert throwsAssertionError(() -> Assert.assertContains(strings, "a", "b", "c"));
+        assert !throwsAssertionError(() -> Assert.assertContains(integerList, 2, 3, 4, 5));
 
-        assert !throwsAssertionError(() -> Assert.assertContains(ints, 1, 2, 3));
-        assert throwsAssertionError(() -> Assert.assertContains(ints, "a", "b", "c"));
+        assert !throwsAssertionError(() -> Assert.assertContains(integerArray, 1, 2, 3));
+        assert throwsAssertionError(() -> Assert.assertContains(integerArray, "a", "b", "c"));
     }
 
     public void testThrows() {

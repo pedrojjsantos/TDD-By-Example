@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 public class Assert {
+    private static final String newline = "%n".formatted();
+
     private Assert() {}
 
     public static void assertEquals(Object expected, Object actual) {
@@ -14,9 +16,9 @@ public class Assert {
         String treatedMsg = treatParamMessage(msg);
 
         if (!isEqual(expected, actual)) {
-            String errorMsg = "%sExpected: %s%nActual: %s".formatted(
+            String errorMsg = "%s%nExpected: %s%nActual: %s".formatted(
                     treatedMsg, objectToString(expected), objectToString(actual));
-            throw new AssertionError(errorMsg.formatted());
+            throw new AssertionError(errorMsg);
         }
     }
 
@@ -27,9 +29,9 @@ public class Assert {
         String treatedMsg = treatParamMessage(msg);
 
         if (isEqual(expected, actual)) {
-            String errorMsg = "%sExpected not: %s".formatted(
+            String errorMsg = "%s%nExpected not: %s".formatted(
                     treatedMsg, objectToString(actual));
-            throw new AssertionError(errorMsg.formatted());
+            throw new AssertionError(errorMsg);
         }
     }
 
@@ -43,9 +45,8 @@ public class Assert {
 
     private static String treatParamMessage(String msg) {
         if (msg == null || msg.isEmpty())
-            return "%n";
-
-        return msg + "%n";
+            return "";
+        return msg;
     }
 
     public static void assertTrue(boolean condition) {
@@ -53,10 +54,20 @@ public class Assert {
             throw new AssertionError("%nExpected: 'True'".formatted());
         }
     }
+    public static void assertTrue(String msg, boolean condition) {
+        if (!condition) {
+            throw new AssertionError("%s%nExpected: 'True'".formatted(treatParamMessage(msg)));
+        }
+    }
 
     public static void assertFalse(boolean condition) {
         if (condition) {
             throw new AssertionError("%nExpected: 'False'".formatted());
+        }
+    }
+    public static void assertFalse(String msg, boolean condition) {
+        if (condition) {
+            throw new AssertionError("%s%nExpected: 'False'".formatted(treatParamMessage(msg)));
         }
     }
 
@@ -74,9 +85,9 @@ public class Assert {
         String treatedMsg = treatParamMessage(msg);
 
         if (obj != null) {
-            String errorMsg = "%sExpected: null%nActual: %s"
+            String errorMsg = "%s%nExpected: null%nActual: %s"
                     .formatted(treatedMsg, objectToString(obj));
-            throw new AssertionError(errorMsg.formatted());
+            throw new AssertionError(errorMsg);
         }
     }
 
@@ -87,21 +98,26 @@ public class Assert {
         String treatedMsg = treatParamMessage(msg);
 
         if (obj == null) {
-            String errorMsg = treatedMsg + "Expected not: null";
-            throw new AssertionError(errorMsg.formatted());
+            String errorMsg = "%s%nExpected not: null".formatted(treatedMsg);
+            throw new AssertionError(errorMsg);
         }
     }
 
     @SafeVarargs
     public static <T> void assertContains(Collection<T> collection, T ... elements) {
-        if (collection == null) Assert.fail();
+        if (collection == null) Assert.fail("The Collection is null");
 
-        Assert.assertTrue(collection.containsAll(List.of(elements)));
+        for (T elem : elements) {
+            if (!collection.contains(elem)) {
+                String errorMsg = "%s%nExpected '%s' in %s".formatted("", elem, collection);
+                throw new AssertionError(errorMsg);
+            }
+        }
     }
 
     @SafeVarargs
     public static <T> void assertContains(T[] array, T ... elements) {
-        if (array == null) Assert.fail();
+        if (array == null) Assert.fail("The Collection is null");
 
         assertContains(Arrays.asList(array), elements);
     }
